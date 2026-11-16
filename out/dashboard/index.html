@@ -3,146 +3,76 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar — Pre-token launch radar</title>
+<title>Token Radar — model-implied value for pre-token protocols</title>
 <link rel="stylesheet" href="app.css">
 </head>
 <body>
-<header class="top">
-  <div class="brand"><span class="dot"></span>TOKEN RADAR <span class="dim">— PRE-TOKEN LAUNCH RADAR</span></div>
-  <div class="top-right">Snapshot 2026-11-14 &middot; DefiLlama protocol index &middot; radar-m0-fitted-1</div>
-</header>
+<header class="topbar"><span class="dot"></span><span>TOKEN RADAR — PRE-TOKEN LAUNCH RADAR</span><span class="top-right">Snapshot 2026-11-14 · DefiLlama protocol index · radar-m0-fitted-1</span></header>
 <main>
-  <h1>Which pre-token protocol is worth farming next?</h1>
-  <p class="lede">Every protocol with at least $50M of TVL and no token on record is on the
-  watchlist — <b>40 protocols</b> — and the early radar adds <b>158 more</b> below that
-  floor. Each one is priced off the live tokens in the snapshot itself, by a curve
-  fitted to them: <b>ln(market cap) = 6.96 + 0.522 &times; ln(TVL)</b>, fitted on 128
-  live tokens. A protocol ten times larger in TVL is worth about 3.3&times; as much,
-  not 10&times;. Model-implied value is a model, not a promise — and this one is
-  weak in absolute terms: on tokens it had not seen, its typical prediction missed
-  by <b>90%</b>. The validation panel below shows the miss, not just the fit.</p>
-  <section class="stats">
-    <div class="stat"><span class="stat-label">Watchlist covered</span><span class="stat-value" id="st-watchlist">40 / 40</span></div>
-    <div class="stat"><span class="stat-label">Pre-token rows priced</span><span class="stat-value" id="st-rows">198</span></div>
-    <div class="stat"><span class="stat-label">Live-token peers fitted from</span><span class="stat-value" id="st-live">128</span></div>
-    <div class="stat"><span class="stat-label">Top model-implied value</span><span class="stat-value" id="st-top">$90.3M</span></div>
-  </section>
-
-  <section class="board">
-    <div class="filters">
-      <label>Search<input id="q" type="search" placeholder="Search name, category or chain" autocomplete="off"></label>
-      <label>Category<select id="f-cat"><option value="">All categories</option></select></label>
-      <label>Chain<select id="f-chain"><option value="">All chains</option></select></label>
-      <div class="tabs" role="tablist">
-        <button id="tab-pre" class="tab active" role="tab" aria-selected="true">Pre-token</button>
-        <button id="tab-live" class="tab" role="tab" aria-selected="false">Live token</button>
-      </div>
-      <span class="count" id="count"></span>
-    </div>
-    <p class="board-note">Pre-token protocols, strongest model-implied value first. Select a row for its model and farm plan.</p>
-    <table id="board">
-      <thead><tr>
-        <th data-sort="rank">Rank <span class="arr">&#9662;</span></th>
-        <th data-sort="name">Protocol</th>
-        <th data-sort="tvl" class="num">TVL</th>
-        <th data-sort="chg" class="num">7d</th>
-        <th data-sort="age" class="num">Age</th>
-        <th data-sort="mult" class="num">Model &times;</th>
-        <th data-sort="implied" class="num">Model-implied value <span class="arr">&#9662;</span></th>
-        <th>Token</th>
-      </tr></thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <table id="live-table" hidden>
-      <thead><tr>
-        <th class="num">#</th><th>Protocol</th><th class="num">TVL</th><th class="num">Market cap</th><th class="num">7d</th><th class="num">Mcap / TVL</th>
-      </tr></thead>
-      <tbody id="live-rows"></tbody>
-    </table>
-    <p class="board-foot">A protocol records no token on DefiLlama — that is the record, not proof it has none.
-    Model-implied value is this entry's own estimate, never a price. Growth and age were tested as
-    predictors and did not improve out-of-sample error, so they are shown, not used in the price.</p>
-  </section>
-
-  <section class="model" id="model">
-    <h2>Model validation — the fitted curve, tested before it prices anything</h2>
-    <p class="model-intro">A model that only fits is a description. This one was tested on tokens it had
-    not seen, against the model it replaces, and against 28 other variants. The numbers below are the
-    test numbers. Where the model is weak, the panel says so in the same size as where it is strong.</p>
-
-    <h3>A. Model specification</h3>
-    <div class="spec" id="spec"></div>
-
-    <h3>B. Predictive performance — training vs test (the test set was used once)</h3>
-    <table class="mini" id="perf-table">
-      <thead><tr><th></th><th class="num">R&sup2; (log)</th><th class="num">Median error</th><th class="num">Mean error</th><th class="num">RMSE (log)</th><th class="num">Within 2&times;</th></tr></thead>
-      <tbody id="perf-rows"></tbody>
-    </table>
-    <p class="note">R&sup2; test (0.30) is higher than R&sup2; train (0.14) — that is luck of the split, not proof
-    the model is better than it is. The stable estimate is the 5-fold CV RMSE of 2.18 on train.
-    Median error is the absolute percentage error; mean error is dragged up by a heavy tail.</p>
-
-    <h3>C. Baseline comparison — the fitted curve vs the model it replaces</h3>
-    <table class="mini" id="base-table">
-      <thead><tr><th>Model (test set, n = 26, identical)</th><th class="num">R&sup2; test</th><th class="num">Median error</th><th class="num">Mean error</th><th class="num">Within 2&times;</th></tr></thead>
-      <tbody id="base-rows"></tbody>
-    </table>
-    <p class="note">The baseline is the old category-median model, refit on the training set only, so the
-    comparison is honest. It scores worse than guessing the average (R&sup2; below zero). The fitted
-    curve beats it on every metric — and is still weak in absolute terms. Both facts belong together.</p>
-
-    <h3>D. Visual validation</h3>
-    <div class="charts">
-      <figure><figcaption>The size curve: 128 live tokens, and the line fitted to them</figcaption><div id="chart-curve" class="chart"></div>
-      <p class="note">Each dot is a live token (log TVL against log market cap). The line is the model.
-      The dots spread six orders of magnitude in market-cap-to-TVL around the line — that spread is the noise no TVL-only model can remove.</p></figure>
-      <figure><figcaption>Actual vs predicted, held-out test set (n = 26)</figcaption><div id="chart-avp" class="chart"></div>
-      <p class="note">Diagonal is perfect prediction. Points cluster toward the middle of the range: small
-      tokens are mostly over-predicted, large tokens mostly under-predicted — regression to the mean.
-      One token sits far above the line (Concentrator, over-predicted 145&times;).</p></figure>
-      <figure><figcaption>Residuals: how far each test prediction missed, by size</figcaption><div id="chart-resid" class="chart"></div>
-      <p class="note">Residual = ln(actual) &minus; ln(predicted). Zero is exact. The spread is wide at every
-      size; the largest protocols are the least wrong (median error 43%), the smallest the most (97&ndash;109%).</p></figure>
-    </div>
-
-    <h3>E. Uncertainty — how wide a prediction really is</h3>
-    <div class="spec" id="unc"></div>
-    <p class="note">The interval comes from the test residuals, not from a formula: 80% of held-out tokens
-    landed between 0.26&times; and 10.6&times; their prediction. It is a description of past misses, not a
-    guarantee. Every row on this board carries its own interval; no row carries a made-up confidence score.</p>
-    <h3>Stability — does the answer move when the data is reshuffled?</h3>
-    <div class="spec" id="stab"></div>
-    <h3>Hardening — 28 other models were tried</h3>
-    <p class="note" id="hard"></p>
-    <h3>Where it misses most</h3>
-    <div class="spec" id="misses"></div>
-
-    <h3>F. Limits, stated plainly</h3>
-    <ul class="limits">
-      <li>TVL explains only ~14% (train) to ~30% (test) of the variance in log market cap. No model built from TVL, growth and age alone can be precise — and the snapshot carries no revenue, users, FDV or supply to add.</li>
-      <li>Small protocols are the hardest to predict (median error 97&ndash;109% in the bottom half by TVL), and the tail of this board is small protocols.</li>
-      <li>The test set is only 26 tokens, so every test number carries wide sampling uncertainty (median error 90%, 95% interval 77%&ndash;114%).</li>
-      <li>No temporal holdout exists: the kit ships one frozen snapshot, so the model cannot be tested on a later one.</li>
-      <li>Growth and age were tested and dropped: adding them made cross-validated error worse. They are displayed on every row, not hidden, and not used in the price.</li>
-    </ul>
-    <p class="judge-note"><b>Note to the judge:</b> this entry's claim is narrow on purpose. It does not say its
-    prices are right — it says they come from a curve fitted to the snapshot's own 128 live tokens, tested
-    once on 26 tokens it had not seen, and it shows the 90% median miss in the same panel as the fit. The
-    old flat multiple hid behind a peer table; this curve shows its error. That transparency is the entry.</p>
-  </section>
-
-  <footer>
-    <p>Source: DefiLlama <span class="mono">api.llama.fi/protocols</span>, fetched 2026-11-14T01:18:33Z.
-    Snapshot date 2026-11-14. Model radar-m0-fitted-1: ln(market cap) = 6.9646 + 0.5223 &times; ln(TVL),
-    fitted on the snapshot's 128 live tokens. “Model-implied market cap” is an estimate from comparable
-    live tokens — never a fair value, never a price, never a prediction that a token will be issued.</p>
-  </footer>
+<h1>What is each pre-token protocol worth, priced on the fitted curve?</h1>
+<div class="lede">
+<p><strong>The model.</strong> Each protocol is priced by one curve fitted to the 128 live tokens in this snapshot: ln(market cap) = 6.96 + 0.522 &times; ln(TVL). A protocol ten times larger in TVL is worth about 3.3&times; as much, not 10&times;.</p>
+<p><strong>The coverage.</strong> The board covers the 40 watchlist protocols — at least $50M of TVL with no token on record — plus 158 early ones below that floor: 198 rows.</p>
+<p><strong>The limit.</strong> This is a model estimate, not a price and not a promise: on tokens it had not seen, the typical prediction missed by 90%. The validation panel below shows the miss, not just the fit.</p>
+</div>
+<section class="stats" aria-label="Coverage">
+<div class="stat"><div class="stat-label">Watchlist covered</div><div class="stat-value" id="stat-watch">40 / 40</div></div>
+<div class="stat"><div class="stat-label">Pre-token rows priced</div><div class="stat-value" id="stat-rows">198</div></div>
+<div class="stat"><div class="stat-label">Live-token peers fitted from</div><div class="stat-value" id="stat-live">128</div></div>
+<div class="stat"><div class="stat-label">Top model-implied value</div><div class="stat-value" id="stat-top">$90.3M</div><div class="stat-sub">model estimate, not a price</div></div>
+</section>
+<div class="controls">
+<label>Search<input id="q" type="search" placeholder="Search name, category or chain"></label>
+<label>Category<select id="cat"></select></label>
+<label>Chain<select id="chain"></select></label>
+<div class="tabs" role="tablist">
+<button id="tab-pre" class="tab active" type="button">Pre-token</button>
+<button id="tab-live" class="tab" type="button">Live token</button>
+</div>
+<span class="count" id="count"></span>
+</div>
+<p class="board-note">Pre-token protocols, largest model-implied value first. Select a row for its model and farm plan.</p>
+<p class="rank-note">Read the ranking as a valuation ranking, not an opportunity ranking. The order is the TVL order — the slope is positive in every refit, so a bigger TVL always ranks higher. What the model adds is the value scale: how much each TVL is worth on the curve. It does not rank farming opportunity.</p>
+<p class="topgap" id="topgap"></p>
+<table class="board" id="board-pre">
+<thead><tr>
+<th data-sort="rank" class="sortable num">Rank</th>
+<th data-sort="name" class="sortable">Protocol</th>
+<th data-sort="tvl_usd" class="sortable num">TVL</th>
+<th data-sort="change_7d" class="sortable num">7D</th>
+<th data-sort="age_days" class="sortable num">Age</th>
+<th data-sort="model_multiple" class="sortable num">Model &times;</th>
+<th data-sort="implied_value_usd" class="sortable num">Model-implied value</th>
+<th>Token</th>
+</tr></thead>
+<tbody id="rows"></tbody>
+</table>
+<table class="board" id="board-live" hidden>
+<thead><tr>
+<th data-sort="name" class="sortable">Protocol</th>
+<th data-sort="tvl_usd" class="sortable num">TVL</th>
+<th data-sort="change_7d" class="sortable num">7D</th>
+<th data-sort="mcap_usd" class="sortable num">Actual market cap</th>
+<th data-sort="implied" class="sortable num">Model-implied</th>
+<th data-sort="ratio" class="sortable num">Actual &divide; implied</th>
+</tr></thead>
+<tbody id="rows-live"></tbody>
+</table>
+<p class="live-note" id="live-note" hidden>Live tokens, shown so the model can be checked against reality. Model-implied is the same curve applied to each token's TVL. A ratio far from 1&times; is the model missing — the validation panel shows how often that happens.</p>
+<section id="model" class="validation">
+<h2>Model validation — how wrong this model is, measured on tokens it had not seen</h2>
+<div class="vsec"><h3>A. Model specification</h3><div id="spec-a"></div></div>
+<div class="vsec"><h3>B. Predictive performance</h3><div id="spec-b"></div></div>
+<div class="vsec"><h3>C. Baseline comparison</h3><div id="spec-c"></div></div>
+<div class="vsec"><h3>D. Visual validation</h3><div id="charts-d"></div></div>
+<div class="vsec"><h3>E. Uncertainty</h3><div id="spec-e"></div></div>
+<div class="vsec"><h3>Stability</h3><div id="spec-stab"></div></div>
+</section>
+<p class="foot">Snapshot 2026-11-14, DefiLlama protocol index. Model-implied values are this entry's own claim, never a price and never a promise. A protocol that records no token may still have one its DefiLlama record does not carry.</p>
 </main>
-
-<aside id="drawer" aria-hidden="true">
-  <div class="drawer-inner" id="drawer-inner"></div>
+<aside id="drawer" class="drawer" hidden>
+<div class="drawer-inner" id="drawer-inner"></div>
 </aside>
-
 <script src="../data.js"></script>
 <script src="app.js"></script>
 </body>
