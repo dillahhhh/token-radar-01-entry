@@ -155,8 +155,8 @@ the parent's job at submit time; no bundle was created here.
    stated on the board (P1-8).
 
 ## Files
-- `dashboard/index.html` (5,089 B), `dashboard/app.css` (6,756 B),
-  `dashboard/app.js` (26,618 B) — rewritten fresh.
+- `dashboard/index.html` (4,751 B), `dashboard/app.css` (8,216 B),
+  `dashboard/app.js` (28,128 B) — rewritten fresh (final small fixes, 16 Nov).
 - `out/` (board.json, data.js, dashboard/, screenshots/, dossier.json),
   `screenshots/` (4 new images), `REVISION-REPORT.md` (this file).
 - Verification: `~/workspace/makefun/token-radar-01/tools/verify-v2.mjs`,
@@ -165,3 +165,83 @@ the parent's job at submit time; no bundle was created here.
 - **No code was read or copied from `candidates/comps/` or
   `candidates/param/`, nor from the previous dashboard files. No GitHub
   push. No bundle. No submit.**
+
+## Final small fixes (16 Nov, after Ting's FINAL verdict "REVISI KECIL — LAYAK DIAJUKAN")
+
+Ting's final review (16 Nov ~17:17 WIB): all 8 P0/P1 items PASSED, verdict
+"LAYAK DIAJUKAN", GO SUBMIT not yet given. Three remaining jobs, all done
+here. No model rebuild, no push, no bundle, no submit.
+
+### 1. Farm plan — capital sentence (P0)
+
+The drawer box "Farm plan — at a glance" previously said "Capital comes
+back on exit; gas does not." — a promise that capital returns. Replaced
+with the exact required sentence:
+
+> "Capital is intended to be withdrawable, but remains at risk. Estimated
+> gas is an unrecoverable transaction cost."
+
+The box now also states the numbers explicitly (Sentora example): capital
+placed $150; estimated gas ≈ $21 (unrecoverable); net unrecoverable cost
+≈ $21; capital $150 not counted as a cost but still at risk; total outlay
+≈ $171 kept. The fix is GENERAL: the box is parsed per row from that row's
+own six farm steps (`parseFarm` in `dashboard/app.js` — capital, deposit
+gas, first-tx gas, weekly gas, hold days, setup minutes are all regex-parsed
+from the step strings; gas = first tx + deposit + weekly × ceil(hold/7)).
+The sentence lived in the app.js template, not in `lib/model.ts` — model.ts
+was NOT touched.
+
+### 2. Panel A–C — semantic metric colours (P0)
+
+Test numbers in tables B and C were all green, including bad ones. Numbers
+are UNCHANGED; only the visual interpretation changed (new `.warn` amber
+`#d9a441` and `.bad` red `#e5604f` classes in `dashboard/app.css`):
+
+- Table B (train/test): R² test 0.30 stays green; Median error 90.0% →
+  amber; Mean error 686.4% → red; RMSE (log) 1.85 stays neutral; Within 2×
+  26.9% → amber. Train values stay neutral.
+- Table C (baseline): the M0 row keeps the same absolute semantic colours
+  as B (0.30 green, 90.0% amber, 686.4% red, 26.9% amber). The relative win
+  is shown in a third row "M0 vs baseline" in green, computed live from the
+  data: R² +0.31, Median 46.6 pts lower, Mean 438.5 pts lower, Within 2×
+  +15.4 pts. The absolute weakness stays visible in the same size type, in
+  the same table.
+
+### 3. Screenshot D–E re-shot (P0)
+
+Shot 4 (`4-validation-d.png`) previously cut panel E — the 95% CI row was
+clipped at the bottom edge. Measured live: the D block is 819 px and the E
+block 513 px (D+E = 1,348 px), so no 900 px viewport can show both fully.
+Re-shot at viewport 1440×1400 with the D heading scrolled to the top. The
+new shot shows all three D charts AND the entire E panel: stat grid (80%
+interval [0.257×, 10.625×], Middle 50% [0.44×, 6.786×], median absolute
+log miss 1.314 (≈3.7×), Within 2× 26.9%), the 95% CI row [77.3%, 114.3%],
+the full quartile table Q1–Q4 (96.5% / 108.7% / 85.6% / 43.5%), and both
+closing paragraphs. Gate allows it: long side 1440, short side 1400 ≥ 800,
+173,314 B ≤ 512 KiB.
+
+### Verification (all passed, 16 Nov ~17:45 WIB)
+
+- **Dashboard rewritten fresh** (authorship rule): `index.html` (4,751 B),
+  `app.css` (8,216 B), `app.js` (28,128 B) — each written via ≥2 heredoc
+  messages, without reading the previous dashboard files. One bug found and
+  fixed during probing: init called `renderBoard()` then `renderLive()`,
+  which left the count line saying "24 live tokens shown" on load; order
+  swapped so the board count is correct ("198 of 198 rows shown").
+- **Gate:** `node tools/gate-v2.mjs candidates/v2
+  token-radar-01-kit/input/snapshot.json` → **ALL 7 ROWS PASS** (dossier
+  985,595 B, byte-identical to buildDossier).
+- **Recompute:** `node tools/verify-v2.mjs candidates/v2/out
+  token-radar-01-kit/input/snapshot.json` → **0 mismatches, 198 rows**;
+  top 5 UNCHANGED: Sentora $90,255,909 / Steakhouse $90,194,278 / Gauntlet
+  $67,423,830 / Veda $67,104,619 / USDD $54,664,159; validation mismatches 0.
+- **Determinism:** two main.ts runs (`out/` vs `out2/`) → `diff -r`
+  byte-identical; `out2/` removed.
+- **Visual check (Playwright, 0 console errors):** 1-board unchanged;
+  2-detail shows the new capital sentence + $150 / ≈$21 / net ≈$21;
+  3-validation shows amber/red on the big errors in B and C (green only on
+  the relative-win row); 4-validation-d shows all of D and all of E
+  including the 95% CI row.
+- **M0 unchanged:** ln(mcap) = 6.96 + 0.522 × ln(TVL), intercept 6.9646,
+  slope 0.5223, R² test 0.30, median error 90.0% — identical to the
+  revision build. No model/validation number was touched.

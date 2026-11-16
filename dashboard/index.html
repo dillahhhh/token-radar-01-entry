@@ -1,79 +1,78 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Token Radar — model-implied value for pre-token protocols</title>
+<title>Token Radar — Pre-token launch radar</title>
 <link rel="stylesheet" href="app.css">
+<script src="../data.js"></script>
+<script src="app.js" defer></script>
 </head>
 <body>
-<header class="topbar"><span class="dot"></span><span>TOKEN RADAR — PRE-TOKEN LAUNCH RADAR</span><span class="top-right">Snapshot 2026-11-14 · DefiLlama protocol index · radar-m0-fitted-1</span></header>
+<header class="top">
+  <span class="brand"><span class="dot">&#9679;</span> TOKEN RADAR &mdash; PRE-TOKEN LAUNCH RADAR</span>
+  <span class="top-right">Snapshot 2026-11-14 &middot; DefiLlama protocol index &middot; radar-m0-fitted-1</span>
+</header>
 <main>
-<h1>What is each pre-token protocol worth, priced on the fitted curve?</h1>
-<div class="lede">
-<p><strong>The model.</strong> Each protocol is priced by one curve fitted to the 128 live tokens in this snapshot: ln(market cap) = 6.96 + 0.522 &times; ln(TVL). A protocol ten times larger in TVL is worth about 3.3&times; as much, not 10&times;.</p>
-<p><strong>The coverage.</strong> The board covers the 40 watchlist protocols — at least $50M of TVL with no token on record — plus 158 early ones below that floor: 198 rows.</p>
-<p><strong>The limit.</strong> This is a model estimate, not a price and not a promise: on tokens it had not seen, the typical prediction missed by 90%. The validation panel below shows the miss, not just the fit.</p>
-</div>
-<section class="stats" aria-label="Coverage">
-<div class="stat"><div class="stat-label">Watchlist covered</div><div class="stat-value" id="stat-watch">40 / 40</div></div>
-<div class="stat"><div class="stat-label">Pre-token rows priced</div><div class="stat-value" id="stat-rows">198</div></div>
-<div class="stat"><div class="stat-label">Live-token peers fitted from</div><div class="stat-value" id="stat-live">128</div></div>
-<div class="stat"><div class="stat-label">Top model-implied value</div><div class="stat-value" id="stat-top">$90.3M</div><div class="stat-sub">model estimate, not a price</div></div>
-</section>
-<div class="controls">
-<label>Search<input id="q" type="search" placeholder="Search name, category or chain"></label>
-<label>Category<select id="cat"></select></label>
-<label>Chain<select id="chain"></select></label>
-<div class="tabs" role="tablist">
-<button id="tab-pre" class="tab active" type="button">Pre-token</button>
-<button id="tab-live" class="tab" type="button">Live token</button>
-</div>
-<span class="count" id="count"></span>
-</div>
-<p class="board-note">Pre-token protocols, largest model-implied value first. Select a row for its model and farm plan.</p>
-<p class="rank-note">Read the ranking as a valuation ranking, not an opportunity ranking. The order is the TVL order — the slope is positive in every refit, so a bigger TVL always ranks higher. What the model adds is the value scale: how much each TVL is worth on the curve. It does not rank farming opportunity.</p>
-<p class="topgap" id="topgap"></p>
-<table class="board" id="board-pre">
-<thead><tr>
-<th data-sort="rank" class="sortable num">Rank</th>
-<th data-sort="name" class="sortable">Protocol</th>
-<th data-sort="tvl_usd" class="sortable num">TVL</th>
-<th data-sort="change_7d" class="sortable num">7D</th>
-<th data-sort="age_days" class="sortable num">Age</th>
-<th data-sort="model_multiple" class="sortable num">Model &times;</th>
-<th data-sort="implied_value_usd" class="sortable num">Model-implied value</th>
-<th>Token</th>
-</tr></thead>
-<tbody id="rows"></tbody>
-</table>
-<table class="board" id="board-live" hidden>
-<thead><tr>
-<th data-sort="name" class="sortable">Protocol</th>
-<th data-sort="tvl_usd" class="sortable num">TVL</th>
-<th data-sort="change_7d" class="sortable num">7D</th>
-<th data-sort="mcap_usd" class="sortable num">Actual market cap</th>
-<th data-sort="implied" class="sortable num">Model-implied</th>
-<th data-sort="ratio" class="sortable num">Actual &divide; implied</th>
-</tr></thead>
-<tbody id="rows-live"></tbody>
-</table>
-<p class="live-note" id="live-note" hidden>Live tokens, shown so the model can be checked against reality. Model-implied is the same curve applied to each token's TVL. A ratio far from 1&times; is the model missing — the validation panel shows how often that happens.</p>
-<section id="model" class="validation">
-<h2>Model validation — how wrong this model is, measured on tokens it had not seen</h2>
-<div class="vsec"><h3>A. Model specification</h3><div id="spec-a"></div></div>
-<div class="vsec"><h3>B. Predictive performance</h3><div id="spec-b"></div></div>
-<div class="vsec"><h3>C. Baseline comparison</h3><div id="spec-c"></div></div>
-<div class="vsec"><h3>D. Visual validation</h3><div id="charts-d"></div></div>
-<div class="vsec"><h3>E. Uncertainty</h3><div id="spec-e"></div></div>
-<div class="vsec"><h3>Stability</h3><div id="spec-stab"></div></div>
-</section>
-<p class="foot">Snapshot 2026-11-14, DefiLlama protocol index. Model-implied values are this entry's own claim, never a price and never a promise. A protocol that records no token may still have one its DefiLlama record does not carry.</p>
+  <h1>What is each pre-token protocol worth, priced on the fitted curve?</h1>
+  <div class="lede">
+    <p><b>The model.</b> Each protocol is priced by one curve fitted to the 128 live tokens in this snapshot: ln(market cap) = 6.96 + 0.522 &times; ln(TVL). A protocol ten times larger in TVL is worth about 3.3&times; as much, not 10&times;.</p>
+    <p><b>The coverage.</b> The board covers the 40 watchlist protocols &mdash; at least $50M of TVL with no token on record &mdash; plus 158 early ones below that floor: 198 rows.</p>
+    <p><b>The limit.</b> This is a model estimate, not a price and not a promise: on tokens it had not seen, the typical prediction missed by 90%. The validation panel below shows the miss, not just the fit.</p>
+  </div>
+  <div class="stats">
+    <div class="stat"><span class="slabel">Watchlist covered</span><span class="sval" id="stat-watch">40 / 40</span></div>
+    <div class="stat"><span class="slabel">Pre-token rows priced</span><span class="sval" id="stat-rows">198</span></div>
+    <div class="stat"><span class="slabel">Live-token peers fitted from</span><span class="sval" id="stat-live">128</span></div>
+    <div class="stat"><span class="slabel">Top model-implied value</span><span class="sval" id="stat-top">$90.3M</span><span class="ssub">model estimate, not a price</span></div>
+  </div>
+  <div class="controls">
+    <div class="field"><label for="q">Search</label><input id="q" type="search" placeholder="Search name, category or chain"></div>
+    <div class="field"><label for="cat">Category</label><select id="cat"><option value="">All categories</option></select></div>
+    <div class="field"><label for="chain">Chain</label><select id="chain"><option value="">All chains</option></select></div>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab active" data-tab="pre">Pre-token</button>
+      <button type="button" class="tab" data-tab="live">Live token</button>
+    </div>
+    <span class="count" id="count">198 of 198 rows shown</span>
+  </div>
+  <p class="hint">Pre-token protocols, largest model-implied value first. Select a row for its model and farm plan.</p>
+  <div class="note">Read the ranking as a valuation ranking, not an opportunity ranking. The order is the TVL order &mdash; the slope is positive in every refit, so a bigger TVL always ranks higher. What the model adds is the value scale: how much each TVL is worth on the curve. It does not rank farming opportunity.</div>
+  <p class="tie" id="tie-note"></p>
+  <table id="board-pre" class="board">
+    <thead><tr>
+      <th data-sort="rank" class="num">Rank &#9650;</th>
+      <th data-sort="name">Protocol</th>
+      <th data-sort="tvl" class="num">TVL</th>
+      <th data-sort="change" class="num">7D</th>
+      <th data-sort="age" class="num">Age</th>
+      <th data-sort="multiple" class="num">Model &times;</th>
+      <th data-sort="implied" class="num">Model-implied value</th>
+      <th>Token</th>
+    </tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <table id="board-live" class="board" hidden>
+    <thead><tr>
+      <th data-sort="name">Protocol</th>
+      <th data-sort="tvl" class="num">TVL</th>
+      <th data-sort="change" class="num">7D</th>
+      <th data-sort="mcap" class="num">Actual market cap &#9660;</th>
+      <th data-sort="implied" class="num">Model-implied</th>
+      <th data-sort="ratio" class="num">Actual &divide; implied</th>
+    </tr></thead>
+    <tbody id="rows-live"></tbody>
+  </table>
+  <section id="model" class="validation">
+    <h2>Model validation &mdash; how wrong this model is, measured on tokens it had not seen</h2>
+    <div class="vblock"><h3>A. Model specification</h3><div id="spec-a"></div></div>
+    <div class="vblock"><h3>B. Predictive performance</h3><div id="spec-b"></div></div>
+    <div class="vblock"><h3>C. Baseline comparison</h3><div id="spec-c"></div></div>
+    <div class="vblock"><h3>D. Visual validation</h3><div id="charts-d"></div></div>
+    <div class="vblock"><h3>E. Uncertainty</h3><div id="spec-e"></div></div>
+    <div class="vblock"><h3>Stability</h3><div id="spec-stab"></div></div>
+  </section>
 </main>
-<aside id="drawer" class="drawer" hidden>
-<div class="drawer-inner" id="drawer-inner"></div>
-</aside>
-<script src="../data.js"></script>
-<script src="app.js"></script>
+<aside id="drawer" hidden></aside>
 </body>
 </html>
