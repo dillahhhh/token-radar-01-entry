@@ -1,6 +1,10 @@
 # Token Radar v2 — Pre-token launch radar (fitted curve)
 
-Which pre-token protocol is worth farming next? Every protocol with at least
+[![make.fun · token-radar-01](https://make.fun/badge/token-radar-01.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![rank](https://make.fun/badge/token-radar-01/dillahhhh/token-radar-01-entry/rank.svg)](https://make.fun/bounty/token-radar-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+[![reward](https://make.fun/badge/token-radar-01/dillahhhh/token-radar-01-entry/reward.svg)](https://make.fun/bounty/token-radar-01?utm_source=github&utm_medium=readme&utm_campaign=token-radar-01)
+
+What is each pre-token protocol worth, priced on the fitted curve? Every protocol with at least
 $50M of TVL and no token on record is on the watchlist — 40 protocols — and
 the early radar adds 158 more below that floor. Each one is priced off the
 live tokens in the snapshot itself, by a curve fitted to them:
