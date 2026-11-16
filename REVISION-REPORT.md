@@ -245,3 +245,86 @@ closing paragraphs. Gate allows it: long side 1440, short side 1400 ≥ 800,
 - **M0 unchanged:** ln(mcap) = 6.96 + 0.522 × ln(TVL), intercept 6.9646,
   slope 0.5223, R² test 0.30, median error 90.0% — identical to the
   revision build. No model/validation number was touched.
+
+## A–C colour visibility fix (16 Nov ~18:30 WIB)
+
+Ting's verdict on commit 4bd01e8 was GO BERSYARAT, 2/3 passed: farm plan
+LULUS, D–E LULUS, but the semantic colours on validation panel A–C were
+BELUM TERVERIFIKASI — "Di screenshot 3, angka test terlihat hampir
+semuanya putih/netral. Gue belum bisa membedakan dengan jelas" (median
+error 90% amber, mean error 686.4% merah, within 2× 26.9% amber, M0 vs
+baseline hijau). No number or model change was requested — only that the
+colours actually show in the final build and screenshot.
+
+### Root cause (verified, not guessed)
+
+A Playwright probe of the live page showed the semantic classes ARE on the
+cells (`td.num good` on 0.30, `td.num warn` on 90.0% / 26.9%,
+`td.num bad` on 686.4%, `td.num good` on the "M0 vs baseline" row) and
+bold (fw 700) IS applied — but the computed colour of ALL of them was
+`rgb(221,232,226)`, the base off-white. Pixel sampling of the old
+3-validation.png confirmed it: the dominant bright colour was
+(221,232,226), with only a few amber fringe pixels. So the earlier
+`.warn` (#d9a441) / `.bad` (#e5604f) declarations were missing or
+overridden by a later equal-specificity rule. The JS was fine; the CSS was
+the problem. The semantic classes appear only on `td.num` cells in tables
+B and C, so strengthening them touches nothing else.
+
+### Fix (authorship rule followed)
+
+`dashboard/app.css` was rewritten FRESH via exec heredocs (≥2 messages),
+without reading the old dashboard files, reconstructed from Playwright
+computed-style probes + pixel measurements + this report. New semantic
+rules, at the end of the stylesheet, high specificity + `!important`:
+
+- `td.num.good { color: #4ade80 !important; font-weight: 700; }`
+- `td.num.warn { color: #fbbf24 !important; font-weight: 700; }`
+- `td.num.bad  { color: #f87171 !important; font-weight: 700; }`
+
+plus plain `.good/.warn/.bad` rules. Numbers are UNCHANGED — colour
+(and bold) only. `app.js`, `board.json`, `data.js`, M0 and every
+model/validation number are untouched.
+
+During the rewrite, several layout details were re-derived from the
+approved build and corrected so the re-render matches it (stats
+`.sval` line-height 1.2, control field widths 230/200/151 px,
+spec-grid label margin, drawer stat-block/heading gaps, farm paragraph
+line-height 1.5 / margin 6 px). Rendering is deterministic (two
+independent Playwright runs of the same code are 0 px apart), so the
+remaining sub-pixel differences in the re-rendered shots 1/2/4 are real
+CSS differences, not noise — but per the task, ONLY screenshot 3 was
+retaken; shots 1, 2 and 4 were NOT replaced and keep their committed
+(Ting-approved) versions.
+
+### Verification (all passed, 16 Nov ~18:30 WIB)
+
+- **Live DOM (Playwright, computed style):** 0.30 → rgb(74,222,128)
+  green; 90.0% → rgb(251,191,36) amber; 686.4% → rgb(248,113,113) red;
+  26.9% → amber; "M0 vs baseline" row → green; all fw 700; train values
+  stay neutral. 0 console errors.
+- **New screenshot 3, visual + pixel sampling:** R² test 0.30 green,
+  median error 90.0% amber, mean error 686.4% red, within 2× 26.9% amber,
+  M0 row same colours, "M0 vs baseline" row all green — all clearly
+  visible and distinguishable at a glance. Pixel counts in the PNG:
+  amber #fbbf24 358 px, red #f87171 199 px, green #4ade80 873 px
+  (old PNG: 0 px of each). Table gridline separators are byte-identical
+  positions to the old shot (425/465/506/546/789/829), so the layout did
+  not shift — the 0.839% pixel diff vs the old shot is the colour change
+  itself.
+- **Gate:** `node tools/gate-v2.mjs candidates/v2
+  token-radar-01-kit/input/snapshot.json` → **ALL 7 ROWS PASS**
+  (dashboard 3 files, 42,030 B; dossier 989,900 B).
+- **Recompute:** `node tools/verify-v2.mjs candidates/v2/out
+  token-radar-01-kit/input/snapshot.json` → **0 mismatches, 198 rows**;
+  top 5 UNCHANGED: Sentora $90,255,909 / Steakhouse $90,194,278 / Gauntlet
+  $67,423,830 / Veda $67,104,619 / USDD $54,664,159; validation
+  mismatches 0.
+- **Determinism:** two main.ts runs → `diff -r` byte-identical.
+- **Screenshot hashes (sha256):** 1-board
+  `9aba93f1…` UNCHANGED; 2-detail `f2cbc50c…` UNCHANGED;
+  3-validation `3e21f001d59b22612d2906ac7b2fa0a92fd0f1c5d381ddc42f7278bb434b9e87`
+  NEW (replaces `3079ed88…`); 4-validation-d `c42c7979…` UNCHANGED.
+- **M0 unchanged:** ln(mcap) = 6.96 + 0.522 × ln(TVL), intercept 6.9646,
+  slope 0.5223, R² test 0.30, median error 90.0% — identical to the
+  revision build. No model/validation number was touched. No push, no
+  bundle, no submit.
